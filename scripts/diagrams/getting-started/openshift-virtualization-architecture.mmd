@@ -1,0 +1,58 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#EE0000', 'primaryTextColor': '#FFFFFF', 'primaryBorderColor': '#CC0000', 'lineColor': '#333333', 'secondaryColor': '#F5F5F5', 'tertiaryColor': '#E8E8E8', 'background': '#FFFFFF'}}}%%
+graph TB
+    subgraph cluster["OpenShift Cluster"]
+        direction TB
+
+        subgraph operators["openshift-cnv Namespace — Operators"]
+            direction LR
+            HCO["HyperConverged CR<br/>(Single Entry Point)"]
+            HCO --> KV["KubeVirt<br/>Operator"]
+            HCO --> CDI["CDI<br/>Operator"]
+            HCO --> SSP["SSP<br/>Operator"]
+            HCO --> CNA["Network Addons<br/>Operator"]
+        end
+
+        subgraph controlplane["Control Plane Components"]
+            direction LR
+            KV --> API["virt-api<br/>API Server &amp; Console Access"]
+            KV --> CTRL["virt-controller<br/>VMI Lifecycle &amp; Scheduling"]
+        end
+
+        subgraph node1["Worker Node"]
+            direction TB
+            VH1["virt-handler<br/>(DaemonSet)"]
+            subgraph vm1["virt-launcher Pod — VM 1"]
+                direction TB
+                LIBVIRT1["libvirtd<br/>(session mode)"]
+                QEMU1["QEMU / KVM"]
+                LIBVIRT1 --> QEMU1
+            end
+            VH1 -.->|manages| vm1
+        end
+
+        subgraph node2["Worker Node"]
+            direction TB
+            VH2["virt-handler<br/>(DaemonSet)"]
+            subgraph vm2["virt-launcher Pod — VM 2"]
+                direction TB
+                LIBVIRT2["libvirtd<br/>(session mode)"]
+                QEMU2["QEMU / KVM"]
+                LIBVIRT2 --> QEMU2
+            end
+            VH2 -.->|manages| vm2
+        end
+
+        CTRL -->|creates pods| node1
+        CTRL -->|creates pods| node2
+    end
+
+    classDef operator fill:#EE0000,stroke:#CC0000,color:#FFFFFF,font-weight:bold
+    classDef control fill:#4A90D9,stroke:#357ABD,color:#FFFFFF
+    classDef node fill:#F5F5F5,stroke:#CCCCCC,color:#333333
+    classDef vm fill:#E8F4E8,stroke:#5CB85C,color:#333333
+    classDef daemon fill:#F0AD4E,stroke:#EC971F,color:#333333
+
+    class HCO,KV,CDI,SSP,CNA operator
+    class API,CTRL control
+    class VH1,VH2 daemon
+    class LIBVIRT1,QEMU1,LIBVIRT2,QEMU2 vm
