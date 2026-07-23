@@ -57,6 +57,9 @@
     <a class="nav-link" href="../getting-started/prerequisites.html">Prerequisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../getting-started/architecture-overview.html">Architecture Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../getting-started/install-openshift-virtualization.html">Install OpenShift Virtualization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -110,6 +113,9 @@
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../storage/cdi-operations.html">CDI Operations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/disk-io-tuning.html">Disk I/O Tuning</a>
   </li>
 </ul>
   </li>
@@ -240,6 +246,9 @@
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../vm-lifecycle/custom-golden-images.html">Custom Golden Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../vm-lifecycle/windows-golden-images.html">Windows Golden Images</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../vm-lifecycle/golden-images-troubleshooting.html">Golden Images Troubleshooting</a>
@@ -589,6 +598,17 @@ spec:
 </div>
 </li>
 </ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_option_c_using_virtctl"><a class="anchor" href="#_option_c_using_virtctl"></a>Option C: Using virtctl</h5>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">virtctl expose vm &lt;your-vm-name&gt; --port=3389 --name=&lt;your-vm-name&gt;-rdp-service --type=LoadBalancer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace <code>&lt;your-vm-name&gt;</code> with your VM&#8217;s actual name. For NodePort instead of LoadBalancer, use <code>--type=NodePort</code>.</p>
 </div>
 </div>
 </div>
