@@ -63,6 +63,9 @@
     <a class="nav-link" href="../getting-started/install-openshift-virtualization.html">Install OpenShift Virtualization</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../getting-started/installing-qemu-guest-agent.html">Installing QEMU Guest Agent</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../getting-started/default-storage-class.html">Storage Setup</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -190,6 +193,9 @@
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../vm-configuration/remote-access-windows-vms.html">Remote Access to Windows VMs via RDP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../vm-configuration/ssh-access-windows-vms.html">Remote Access to Windows VMs via SSH</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../vm-configuration/windows-vm-virtio-drivers.html">Windows VMs with VirtIO Drivers</a>
@@ -367,6 +373,11 @@
 <div class="paragraph">
 <p>The HostPath Provisioner (HPP) provides a simple way to use local node storage for OpenShift Virtualization workloads. It&#8217;s included as part of the OpenShift Virtualization operator and creates persistent volumes backed by directories on the host filesystem.</p>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="_images/hpp-architecture.drawio.svg" alt="HPP CSI Architecture - Host filesystem to VM disk data flow">
+</div>
+</div>
 <div class="sect2">
 <h3 id="_when_to_use_hostpath_provisioner"><a class="anchor" href="#_when_to_use_hostpath_provisioner"></a>When to Use HostPath Provisioner</h3>
 <div class="paragraph">
@@ -384,7 +395,32 @@
 <p><strong>Prototyping</strong>: Rapid iteration before production storage deployment</p>
 </li>
 <li>
+<p><strong>Proof-of-concept and demo environments</strong>: Simpler solution to allow audiences to focus on the demo</p>
+</li>
+<li>
+<p><strong>CI/CD and ephemeral environments</strong>: Where storage is frequently provisioned and destroyed</p>
+</li>
+<li>
+<p><strong>Training and workshop environments</strong>: Short-term, shared use of storage without needing additional infrastructure</p>
+</li>
+<li>
 <p><strong>Edge deployments</strong>: Minimal infrastructure requirements</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>HPP is not a good fit for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Production workloads</strong>: Lacks native replication, high availability, and backup/snapshot features</p>
+</li>
+<li>
+<p><strong>Scenarios requiring resource isolation</strong>: No support for thin provisioning or usage quotas</p>
+</li>
+<li>
+<p><strong>Scenarios requiring workload mobility</strong>: Data is tied to a single node and cannot be moved</p>
 </li>
 </ul>
 </div>
@@ -557,6 +593,20 @@ spec:
           WantedBy=multi-user.target
 EOF</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In single node clusters, the node may be placed in a different MachineConfigPool due to the node taking on multiple node roles.
+You can confirm which MachineConfigPool the node is a member of by checking the node count of the MachineConfigPools with <code>oc get mcp</code>.
+Adjust the <code>machineconfiguration.openshift.io/role: worker</code> label in the example above to match accordingly.
+</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock note">
 <table>
